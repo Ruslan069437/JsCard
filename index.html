@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Найди пару</title>
+    <style>
+        body {
+            background: #f0f0f0;
+        }
+        
+        #board {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+        }
+        
+        .card {
+            width: 80px;
+            height: 80px;
+            background: #3498db;
+            color: white;
+            margin: 20px;
+        }
+        
+        .card.open {
+            background: white;
+            color: black;
+        }
+        
+        .card.matched {
+            background: #27ae60;
+            color: white;
+            border-color: #229954;
+        }
+    </style>
+</head>
+<body>
+    <div id="board"></div>
+
+    <script>
+        const emojis = ['😀', '😎', '🐶', '🐱', '🍎', '⭐'];
+        let cards = [];
+        let open = [];
+        let busy = false;
+        let timer = null;
+
+        function start() {
+            let deck = [...emojis, ...emojis];
+            
+            for (let i = deck.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+            
+            cards = deck.map((emoji, i) => ({
+                id: i,
+                emoji: emoji,
+                show: false
+            }));
+            
+            open = [];
+            if (timer) clearTimeout(timer);
+            
+            show();
+        }
+
+        function show() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            
+            cards.forEach(card => {
+                let div = document.createElement('div');
+                div.className = 'card';
+                if (card.show) div.classList.add('open');
+                if (card.done) div.classList.add('matched');
+                div.textContent = (card.show || card.done) ? card.emoji : '?';
+                div.onclick = () => click(card.id);
+                board.appendChild(div);
+            });
+        }
+
+        function click(id) {
+            let card = cards.find(c => c.id === id);
+            
+            if (busy || card.show || card.done || open.length >= 2) return;
+            
+            card.show = true;
+            open.push(card);
+            show();
+            
+            if (open.length === 2) {
+                let [a, b] = open;
+                
+                if (a.emoji === b.emoji) {
+                    a.done = true;
+                    b.done = true;
+                    a.show = false;
+                    b.show = false;
+                    open = [];
+                    show();
+                } else {
+                    busy = true;
+                    timer = setTimeout(() => {
+                        a.show = false;
+                        b.show = false;
+                        open = [];
+                        busy = false;
+                        show();
+                    }, 700);
+                    show();
+                }
+            }
+        }
+
+        start();
+    </script>
+</body>
+</html>
