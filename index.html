@@ -16,7 +16,7 @@
         .card {
             width: 80px;
             height: 80px;
-            background: #3498db;
+            background: var(--main-color);
             color: white;
             margin: 20px;
             font-size: 40px;
@@ -39,6 +39,8 @@
 <body>
     <button id="startfinish">Start</button>
     <div id="timerbut"></div>
+    <button id="chosecard1">first style</button>
+    <button id="chosecard2">second style</button>
     <div><div id="board"></div></div>
     
 
@@ -50,6 +52,11 @@
         let timer;
         let time;
         let ti = 60;
+        let chose1 = '?'
+        let chose2 = 'blue'
+        const chosecard1 = document.getElementById('chosecard1')
+        const chosecard2 = document.getElementById('chosecard2')
+        let flag = 0;
 
         function start() {
             let deck = [...emojis, ...emojis];
@@ -79,7 +86,7 @@
                 div.className = 'card';
                 if (card.show) div.classList.add('open');
                 if (card.done) div.classList.add('matched');
-                div.textContent = (card.show || card.done) ? card.emoji : '?';
+                div.textContent = (card.show || card.done) ? card.emoji : `${chose1}`;
                 div.onclick = () => click(card.id);
                 board.appendChild(div);
             });
@@ -145,7 +152,28 @@
                 butStart.textContent = 'Start';
             }
             console.log("Start")
-            }) 
+            })
+
+        // let card = document.querySelector('.card')
+
+        chosecard1.addEventListener('click', () => {
+            if(flag == 0)
+            {
+                chose1 = '?'
+                document.documentElement.style.setProperty('--main-color', 'blue');
+                // card.setAttribute('style', 'background: blue;');
+                flag++
+            }
+        })
+        chosecard2.addEventListener('click', () => {
+            if(flag == 0)
+            {
+                chose1 = '!'
+                document.documentElement.style.setProperty('--main-color', 'red');
+                // card.setAttribute('style', 'background: red;');
+                flag++
+            }
+        })
     </script>
 </body>
 </html>
