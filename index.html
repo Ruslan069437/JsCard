@@ -10,6 +10,7 @@
         #board {
             display: grid;
             grid-template-columns: repeat(4, 80px);
+            gap: 15px;
         }
         
         .card {
@@ -18,6 +19,9 @@
             background: #3498db;
             color: white;
             margin: 20px;
+            font-size: 40px;
+            cursor: pointer;
+            border-radius: 8px;
         }
         
         .card.open {
@@ -33,14 +37,19 @@
     </style>
 </head>
 <body>
-    <div id="board"></div>
+    <button id="startfinish">Start</button>
+    <div id="timerbut"></div>
+    <div><div id="board"></div></div>
+    
 
     <script>
         const emojis = ['😀', '😎', '🐶', '🐱', '🍎', '⭐'];
         let cards = [];
         let open = [];
         let busy = false;
-        let timer = null;
+        let timer;
+        let time;
+        let ti = 60;
 
         function start() {
             let deck = [...emojis, ...emojis];
@@ -57,7 +66,6 @@
             }));
             
             open = [];
-            if (timer) clearTimeout(timer);
             
             show();
         }
@@ -110,7 +118,34 @@
             }
         }
 
-        start();
+        
+        
+        const butStart = document.getElementById('startfinish')
+
+        butStart.addEventListener('click', () => {
+            console.log("Start")
+            if(butStart.textContent == 'Start')
+            {
+                butStart.textContent = 'Finish';
+                start();
+            const bs = document.getElementById('timerbut')
+            ti = 60;
+            time = setInterval(() => {
+                if(ti === 0)
+                {
+                    bs.textContent = `Вы проиграли`;
+                }
+                    bs.textContent = `Таймер ${ti}`;
+                    ti--;
+                }, 1000);
+            }
+            else
+            {
+                clearInterval(time);
+                butStart.textContent = 'Start';
+            }
+            console.log("Start")
+            }) 
     </script>
 </body>
 </html>
